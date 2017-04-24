@@ -36,22 +36,45 @@ module.exports = {
             }
         }
 
-        Character.find(data, function(err,obj)
-        {
-            if(obj.length === 0)
-                callback(3,data);
-            else
+        Character.find(data, function (err, obj) {
+            if (err || obj.length === 0) {
+                callback(3, data);
+            } else {
                 callback(1, obj);
+            }
         });
     },
 
-    getByName: function(name, callback) {
-        this.get({'name':name},function(success,message){
-            if(success == 1) {
-                callback(success,message[0])
+    getByName: function(name, strict, callback) {
+        if(arguments.length == 2) {
+            callback = strict;
+            strict = false;
+        }
+
+        var lookup = (strict == 'true' || strict === true) ? {'name':name} : {'name':{ "$regex": name, "$options": "i" } };
+        this.get(lookup,function (success, message) {
+            if (success == 1) {
+                callback(success, message[0]);
             }
             else {
-                callback(success,message);
+                callback(success, message);
+            }
+        });
+    },
+
+    getBySlug: function(slug, strict, callback) {
+        if(arguments.length == 2) {
+            callback = strict;
+            strict = false;
+        }
+
+        var lookup = (strict == 'true' || strict === true) ? {'slug':slug} : {'slug':{ "$regex": slug, "$options": "i" } };
+        this.get(lookup,function (success, message) {
+            if (success == 1) {
+                callback(success, message[0]);
+            }
+            else {
+                callback(success, message);
             }
         });
     },
@@ -59,7 +82,7 @@ module.exports = {
     getById: function(id, callback) {
         this.get({'_id': id},function(success,message){
             if(success == 1) {
-                callback(success,message[0])
+                callback(success,message[0]);
             }
             else {
                 callback(success,message);

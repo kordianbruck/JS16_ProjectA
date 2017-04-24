@@ -1,13 +1,12 @@
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+var Schema   = mongoose.Schema;
 
 var AgeSchema = new Schema({
-    name: {type: String, required: true},
-    startDate: {type:Number,required: true},
-	endDate: {type:Number,required: true},
-    predecessor: {type: Schema.types.ObjectId, ref: 'Age'},
-    successor: {type: Schema.types.ObjectId, ref: 'Age'}
+    name       : {type: String, required: true, unique: true},
+    startDate  : {type: Number},
+    endDate    : {type: Number},
+    predecessor: {type: String, ref: 'Age'},
+    successor  : {type: String, ref: 'Age'}
 });
 
 module.exports = mongoose.model('Age', AgeSchema);
-
